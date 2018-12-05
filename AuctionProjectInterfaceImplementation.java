@@ -6,7 +6,7 @@ public class AuctionProjectInterfaceImplementation extends UnicastRemoteObject i
 
     Auction auctions = null;
     AuctionBid someBidPlaced = null;
-    Timer auctionTimer;
+    //Timer auctionTimer;
 
     public  AuctionProjectInterfaceImplementation() throws Exception {
         super();
@@ -18,24 +18,28 @@ public class AuctionProjectInterfaceImplementation extends UnicastRemoteObject i
           if(freshAuctionItem == null){
               return "You can't create an Empty Auction";
           }
-          auctionTimer = new Timer();
+          Auction ab = new Auction();
+          Timer  auctionTimer = new Timer();
           TimerTask  auctionTask = new TimerTask(){
               @Override
               public void run() {
                   //auctions.getAuctionCreated().remove();
                   //try{Thread.sleep(3000);}catch(Exception e){}
                   System.out.println(Thread.currentThread().getName());
-                  for (Map.Entry<Integer, AuctionItem> a : auctions.getAuctionCreated().entrySet()){
-                      if (a.getKey() == auctions.getAuctionID()){
-                        System.out.println("Auction Ended for " + auctions.getAuctionID() + " For item  " + auctions.getAuctionCreated().get(auctions.getAuctionID()).getItem_name());
-                        auctions.getAuctionCreated().get(auctions.getAuctionID()).setStatus("closed");
+                  for (Map.Entry<Integer, AuctionItem> a : ab.getAuctionCreated().entrySet()){
+                      if (a.getKey() == ab.getAuctionID()){
+                        System.out.println("Auction Ended for " + ab.getAuctionID() + " For item  " + ab.getAuctionCreated().get(ab.getAuctionID()).getItem_name());
+                        ab.getAuctionCreated().get(ab.getAuctionID()).setStatus("closed");
                         auctionTimer.cancel();
                         break;
                       }
                   }
               }
           };
+          try{ab.createNewAuction(freshAuctionItem);}catch(Exception e){}
           try{auctions.createNewAuction(freshAuctionItem);}catch(Exception e){}
+
+
           auctionTimer.schedule(auctionTask,(setTime * 60000));
         return "Auction created successfully";
     }
